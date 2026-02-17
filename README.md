@@ -12,9 +12,23 @@ It provides a clean, app-like interface to download videos and audio from suppor
 - Download **YouTube videos & Shorts**
 - Download **Instagram Reels**
 - Extract **MP3 audio**
+- Real-time progress feedback
 - Fast and lightweight
 - Mobile-friendly responsive design
 - No ads, no tracking
+
+---
+
+## 🖼️ Screenshots
+
+### Home Screen
+![Downly Home](screenshots/home.png)
+
+### Paste Media Link
+![Paste Link](screenshots/paste-link.png)
+
+### Download in Progress
+![Downloading](screenshots/downloading.png)
 
 ---
 
@@ -83,6 +97,11 @@ Downly/
 │
 ├── static/
 │   └── logo.png
+│
+├── screenshots/
+│   ├── home.png
+│   ├── paste-link.png
+│   └── downloading.png
 │
 └── downloads/
 ```
