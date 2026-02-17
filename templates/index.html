@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Downly | Universal Media Downloader</title>
+  <link rel="icon" type="image/png" href="/static/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #111827;
+      --surface: #0b1220;
+      --text-primary: #e5e7eb;
+      --text-muted: #9ca3af;
+      --primary-start: #4f46e5;
+      --primary-end: #22d3ee;
+      --border-soft: rgba(148, 163, 184, 0.24);
+      --glow-cyan: rgba(34, 211, 238, 0.5);
+      --glow-blue: rgba(79, 70, 229, 0.45);
+      --success: #22c55e;
+      --error: #ef4444;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --shadow-premium: 0 20px 45px rgba(2, 6, 23, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Inter", "SF Pro Text", "Segoe UI", sans-serif;
+      color: var(--text-primary);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(79, 70, 229, 0.2), transparent 42%),
+        radial-gradient(circle at 85% 10%, rgba(34, 211, 238, 0.17), transparent 38%),
+        linear-gradient(160deg, #0a1328 0%, var(--bg) 50%, #0b1020 100%);
+      padding: 1.25rem;
+    }
+
+    .app-shell {
+      width: min(100%, 700px);
+    }
+
+    .downly-card {
+      position: relative;
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.92));
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-premium);
+      overflow: hidden;
+    }
+
+    .downly-card::before {
+      content: "";
+      position: absolute;
+      inset: -40% 45% auto -20%;
+      height: 180px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.18), transparent 65%);
+      pointer-events: none;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.15rem;
+    }
+
+    .logo-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: #0b1020;
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      box-shadow: inset 0 0 18px rgba(34, 211, 238, 0.18), 0 0 22px rgba(79, 70, 229, 0.3);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .logo-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-meta {
+      min-width: 0;
+    }
+
+    .app-name {
+      margin: 0;
+      font-size: 1.22rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .app-subtitle {
+      margin: 0.2rem 0 0;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .downly-form {
+      margin-top: 0.4rem;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .media-input {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #171f32 0%, #111827 100%);
+      color: var(--text-primary);
+      font-size: 1rem;
+      padding: 1rem 1.05rem;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 200ms ease, transform 200ms ease;
+    }
+
+    .media-input::placeholder {
+      color: #7d8aa0;
+    }
+
+    .media-input:focus {
+      border-color: rgba(34, 211, 238, 0.55);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.18), 0 8px 24px rgba(34, 211, 238, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .action-row {
+      margin-top: 0.9rem;
+      display: grid;
+      gap: 0.7rem;
+      grid-template-columns: 1fr;
+    }
+
+    .action-btn {
+      border: 0;
+      border-radius: var(--radius-sm);
+      min-height: 50px;
+      padding: 0.85rem 1rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      transition: transform 160ms ease, box-shadow 220ms ease, filter 180ms ease, background 180ms ease;
+    }
+
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    .action-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .action-form {
+      margin: 0;
+    }
+
+    .action-form .action-btn {
+      width: 100%;
+    }
+
+    .action-btn-primary {
+      background: linear-gradient(120deg, var(--primary-start), var(--primary-end));
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 10px 26px rgba(34, 211, 238, 0.3), 0 8px 24px rgba(79, 70, 229, 0.35);
+    }
+
+    .action-btn-primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.06);
+      box-shadow: 0 0 20px var(--glow-cyan), 0 12px 32px rgba(79, 70, 229, 0.4);
+    }
+
+    .action-btn-primary:active {
+      transform: translateY(0);
+      filter: brightness(0.98);
+    }
+
+    .action-btn-secondary {
+      background: linear-gradient(180deg, #101a2f 0%, #0f172a 100%);
+      border: 1px solid rgba(34, 211, 238, 0.5);
+      box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.1);
+    }
+
+    .action-btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 18px rgba(34, 211, 238, 0.3), inset 0 0 0 1px rgba(34, 211, 238, 0.2);
+    }
+
+    .action-btn-secondary:active {
+      transform: translateY(0);
+    }
+
+    .status-stack {
+      margin-top: 0.95rem;
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .status-pill {
+      border-radius: 999px;
+      padding: 0.56rem 0.9rem;
+      font-size: 0.87rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      width: fit-content;
+      border: 1px solid transparent;
+      animation: fade-in-up 230ms ease;
+    }
+
+    .status-loading {
+      color: #b5f4ff;
+      background: rgba(34, 211, 238, 0.11);
+      border-color: rgba(34, 211, 238, 0.4);
+    }
+
+    .status-success {
+      color: #d1fae5;
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.5);
+    }
+
+    .status-error {
+      color: #fee2e2;
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.2);
+    }
+
+    .status-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .spinner {
+      border: 2px solid rgba(34, 211, 238, 0.2);
+      border-top-color: #22d3ee;
+      border-radius: 50%;
+      animation: spin 750ms linear infinite;
+    }
+
+    .status-hidden {
+      display: none;
+    }
+
+    .card-footer {
+      margin-top: 1rem;
+      padding-top: 0.95rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.17);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .card-footer p {
+      margin: 0;
+    }
+
+    .card-footer p + p {
+      margin-top: 0.25rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (min-width: 680px) {
+      .downly-card {
+        padding: 1.55rem;
+      }
+
+      .action-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .app-name {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <section class="downly-card" aria-label="Downly downloader">
+      <header class="brand-header">
+        <div class="logo-wrap" aria-hidden="true">
+          <img class="logo-image" src="static/logo.png" alt="Downly logo">
+        </div>
+        <div class="brand-meta">
+          <h1 class="app-name">Downly</h1>
+          <p class="app-subtitle">Download video &amp; audio instantly</p>
+        </div>
+      </header>
+
+      <div class="downly-form">
+        <div class="input-wrap">
+          <label class="status-hidden" for="media-url">Media URL</label>
+          <input
+            id="media-url"
+            class="media-input"
+            type="url"
+            placeholder="Paste YouTube or Instagram link"
+            autocomplete="off"
+            required
+          >
+        </div>
+
+        <div class="action-row">
+          <!-- Two endpoint-specific forms to prevent accidental POST to "/" -->
+          <form id="video-form" class="action-form" method="post" action="/download/video" novalidate>
+            <input type="hidden" name="url" id="video-url">
+            <button class="action-btn action-btn-primary" type="submit">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8 6.5v11l9-5.5-9-5.5z"></path>
+              </svg>
+              Download Video
+            </button>
+          </form>
+          <form id="audio-form" class="action-form" method="post" action="/download/audio" novalidate>
+            <input type="hidden" name="url" id="audio-url">
+            <button class="action-btn action-btn-secondary" type="submit">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 3a1 1 0 0 1 1 1v8.35a4 4 0 1 1-2 0V4a1 1 0 0 1 1-1zm0 12.5a2 2 0 1 0 .001 4.001A2 2 0 0 0 12 15.5z"></path>
+              </svg>
+              Download Audio (MP3)
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <section class="status-stack" aria-live="polite" aria-atomic="true">
+        <p class="status-pill status-loading status-hidden">
+          <span class="status-icon spinner" aria-hidden="true"></span>
+          Processing...
+        </p>
+        <p class="status-pill status-success status-hidden">
+          <svg class="status-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9.55 17.2 4.8 12.45l1.4-1.4 3.35 3.35 8.25-8.25 1.4 1.4-9.65 9.65z"></path>
+          </svg>
+          Download ready
+        </p>
+        <p class="status-pill status-error status-hidden">
+          <svg class="status-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
+          </svg>
+          Invalid or unsupported link
+        </p>
+      </section>
+
+      <footer class="card-footer">
+        <p>Supports YouTube videos, Shorts &amp; Instagram Reels</p>
+        <p>For personal use only</p>
+      </footer>
+    </section>
+  </main>
+  <script>
+    // Submit downloads asynchronously so progress can be polled in real-time.
+    (function () {
+      const mediaUrlInput = document.getElementById("media-url");
+      const videoForm = document.getElementById("video-form");
+      const audioForm = document.getElementById("audio-form");
+      const videoUrlHidden = document.getElementById("video-url");
+      const audioUrlHidden = document.getElementById("audio-url");
+      const loadingEl = document.querySelector(".status-loading");
+      const successEl = document.querySelector(".status-success");
+      const errorEl = document.querySelector(".status-error");
+
+      let pollTimer = null;
+
+      function setPillText(el, text) {
+        const icon = el.querySelector(".status-icon");
+        el.textContent = "";
+        if (icon) {
+          el.appendChild(icon);
+        }
+        el.append(" " + text);
+      }
+
+      function hideAllStatus() {
+        loadingEl.classList.add("status-hidden");
+        successEl.classList.add("status-hidden");
+        errorEl.classList.add("status-hidden");
+      }
+
+      function stopPolling() {
+        if (pollTimer) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+        }
+      }
+
+      async function triggerBrowserDownload(jobId) {
+        const fileResp = await fetch("/download/file/" + encodeURIComponent(jobId));
+        if (!fileResp.ok) {
+          throw new Error("Unable to fetch downloaded file.");
+        }
+        const blob = await fileResp.blob();
+        const disposition = fileResp.headers.get("Content-Disposition") || "";
+        const match = disposition.match(/filename="?([^"]+)"?/i);
+        const filename = match ? match[1] : "downly-download";
+        const url = window.URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        window.URL.revokeObjectURL(url);
+      }
+
+      async function pollProgress(jobId) {
+        stopPolling();
+        pollTimer = setInterval(async function () {
+          try {
+            const resp = await fetch("/progress?job_id=" + encodeURIComponent(jobId), { cache: "no-store" });
+            const data = await resp.json();
+            if (!resp.ok) {
+              throw new Error(data.error || "Progress check failed.");
+            }
+
+            const pct = Number.isFinite(data.percentage) ? Math.max(0, Math.min(100, data.percentage)) : 0;
+            setPillText(loadingEl, "Processing... " + pct + "%");
+            // Reuse the existing loading pill as a progress bar without layout/CSS changes.
+            loadingEl.style.background =
+              "linear-gradient(90deg, rgba(34, 211, 238, 0.28) " +
+              pct +
+              "%, rgba(34, 211, 238, 0.11) " +
+              pct +
+              "%)";
+
+            if (data.status === "finished") {
+              stopPolling();
+              loadingEl.classList.add("status-hidden");
+              loadingEl.style.background = "";
+              setPillText(successEl, "Download ready");
+              successEl.classList.remove("status-hidden");
+              await triggerBrowserDownload(jobId);
+            } else if (data.status === "error") {
+              stopPolling();
+              loadingEl.classList.add("status-hidden");
+              loadingEl.style.background = "";
+              setPillText(errorEl, data.message || "Invalid or unsupported link");
+              errorEl.classList.remove("status-hidden");
+            }
+          } catch (err) {
+            stopPolling();
+            loadingEl.classList.add("status-hidden");
+            loadingEl.style.background = "";
+            setPillText(errorEl, err.message || "Invalid or unsupported link");
+            errorEl.classList.remove("status-hidden");
+          }
+        }, 500);
+      }
+
+      async function startDownload(form, hiddenInput) {
+        const value = mediaUrlInput.value.trim();
+        hiddenInput.value = value;
+
+        hideAllStatus();
+        setPillText(loadingEl, "Processing... 0%");
+        loadingEl.style.background =
+          "linear-gradient(90deg, rgba(34, 211, 238, 0.28) 0%, rgba(34, 211, 238, 0.11) 0%)";
+        loadingEl.classList.remove("status-hidden");
+
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            body: new FormData(form),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "Unable to start download.");
+          }
+          if (!data.job_id) {
+            throw new Error("Missing job id from server.");
+          }
+          await pollProgress(data.job_id);
+        } catch (err) {
+          stopPolling();
+          loadingEl.classList.add("status-hidden");
+          loadingEl.style.background = "";
+          setPillText(errorEl, err.message || "Invalid or unsupported link");
+          errorEl.classList.remove("status-hidden");
+        }
+      }
+
+      videoForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        startDownload(videoForm, videoUrlHidden);
+      });
+
+      audioForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        startDownload(audioForm, audioUrlHidden);
+      });
+    })();
+  </script>
+</body>
+</html>
