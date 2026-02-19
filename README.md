@@ -43,6 +43,18 @@ This project is **meant to be run locally** on your own computer.
 
 ## ⚙️ Local Setup
 
+## 📦 Latest Release
+
+**Version:** v1.0  
+**Platform:** Windows  
+
+You can download the ready-to-use Windows desktop app (EXE) from GitHub Releases.
+
+👉 **[Download Downly v1.0](../../releases/latest)**
+
+No Python or setup required. Just download and run the EXE.
+
+
 ### Requirements
 
 - Python **3.10 or higher**
@@ -61,10 +73,14 @@ pip install flask yt-dlp
 
 ---
 
-### Run the App
+## Local Development (Optional)
+
+If you want to run the app from source:
 
 ```bash
+pip install flask yt-dlp
 python app.py
+
 ```
 
 Open your browser and visit:
