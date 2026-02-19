@@ -19,16 +19,11 @@ It provides a clean, app-like interface to download videos and audio from suppor
 
 ---
 
-## 🖼️ Screenshots
+## Screenshots
 
-### Home Screen
-![Downly Home](screenshots/home.png)
+### Desktop App (Windows – v1.0)
 
-### Paste Media Link
-![Paste Link](screenshots/paste-link.png)
-
-### Download in Progress
-![Downloading](screenshots/downloading.png)
+![Downly Desktop App](screenshots/v1-home.png)
 
 ---
 
